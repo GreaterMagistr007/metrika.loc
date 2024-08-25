@@ -8,8 +8,6 @@ Route::any('/', function() {
     return view('welcome');
 })->name('site.index');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/cabinet', [CabinetController::class, 'getIndexPage'])->name('cabinet.getIndexPage');
-});
+require __DIR__ . 'cabinet.php';
 
 require __DIR__.'/auth.php';
