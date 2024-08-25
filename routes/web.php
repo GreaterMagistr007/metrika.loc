@@ -2,9 +2,14 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CabinetController;
 
 Route::get('/', function () {
     return view('welcome');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get('/cabinet', [CabinetController::class, 'getIndexPage'])->name('cabinet.getIndexPage');
 });
 
 Route::get('/dashboard', function () {
