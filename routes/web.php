@@ -8,6 +8,6 @@ Route::any('/', function() {
     return view('welcome');
 })->name('site.index');
 
-require __DIR__ . 'cabinet.php';
+require 'cabinet.php';
 
 require __DIR__.'/auth.php';
