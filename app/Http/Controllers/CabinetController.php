@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Session;
 
 class CabinetController extends Controller
@@ -15,6 +16,12 @@ class CabinetController extends Controller
      * @var array
      */
     private $params = [];
+    /**
+     * Массив хлебных крошек
+     *
+     * @var array
+     */
+    private $breadCrumbs = [];
 
     /**
      * Активный пользователь системы
@@ -33,6 +40,8 @@ class CabinetController extends Controller
         if (!$this->checkUser()) {
             return redirect(route('site.index'));
         }
+
+        $this->addParam('pageTitle', 'Главная');
 
         return $this->render('cabinet.index');
     }
@@ -74,9 +83,30 @@ class CabinetController extends Controller
      */
     private function getParams()
     {
+        // Добавим текущую страницу в хлебные крошки
+        if (isset($this->params['pageTitle'])) {
+            $this->addBreadCrumb($this->params['pageTitle'], route(Route::current()->getName()));
+        }
+
         $this->addParam('user', $this->user);
+        $this->addParam('breadCrumbs', $this->breadCrumbs);
 
         return $this->params;
+    }
+
+    /**
+     * Добавляем запись в хлебные крошки
+     *
+     * @param $title
+     * @param $href
+     * @return void
+     */
+    private function addBreadCrumb($title, $url)
+    {
+        $this->breadCrumbs[] = [
+            'title' => $title,
+            'url' => $url
+        ];
     }
 
     /**
