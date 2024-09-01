@@ -78,6 +78,7 @@ class CabinetController extends Controller
         $phone = $request->post('phone');
         $oldValues['phone'] = $phone;
         if (!$this->validatePhone($phone)) {
+            dd("Номер не валидный");
             $errors['phone'] = 'Введите корректный номер телефона';
         }
 
@@ -109,6 +110,21 @@ class CabinetController extends Controller
             $this->addParam('oldValues', $oldValues);
             return $this->render('auth.register');
         }
+
+        // проверим, был ли уже такой email зарегистрирован:
+        if (User::getByEmail($email)) {
+            $errors['email'] = 'Пользователь с таким Email уже зарегистрирован.<br><a href="' . route('cabinet.getLoginPage') . '"> Авторизуйтесь </a> или введите другой email';
+        }
+
+        // Проверим, был ли зарегистрирован такой номер телефона:
+        // TODO: сделать проверку по номеру телефона
+
+        if (count($errors)) {
+            $this->addParam('templateErrors', $errors);
+            $this->addParam('oldValues', $oldValues);
+            return $this->render('auth.register');
+        }
+
         dd("Регистрация POST все хорошо");
     }
 

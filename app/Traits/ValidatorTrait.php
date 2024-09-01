@@ -33,7 +33,16 @@ trait ValidatorTrait
 
         $p = Helper::onlyDigits(Helper::formatPhoneNumber($phone));
 
-        if (strlen($p) !== $phoneDigitsLength || $p !== $phone) {
+        if (strlen($p) !== $phoneDigitsLength || Helper::formatPhoneNumber($phone) !== $phone) {
+
+            dd(
+                "длина: " . strlen($p),
+                $phone,
+                $p,
+
+                Helper::formatPhoneNumber($phone) !== $phone
+            );
+
             return false;
         }
 

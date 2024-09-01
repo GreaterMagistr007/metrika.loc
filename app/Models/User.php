@@ -77,4 +77,27 @@ class User extends Authenticatable
 
         return isset($result[0]->cabinet_id) ? Cabinet::getById($result[0]->cabinet_id) : null;
     }
+
+
+    /**
+     * Находит пользователя по его id
+     *
+     * @param $id
+     * @return self|null
+     */
+    public static function getById($id)
+    {
+        return self::where('id', $id)->first();
+    }
+
+    /**
+     * Находит пользователя по его email
+     *
+     * @param $id
+     * @return self|null
+     */
+    public static function getByEmail($email)
+    {
+        return self::where('email', $email)->first();
+    }
 }

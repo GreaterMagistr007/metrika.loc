@@ -16,8 +16,6 @@
                 @php
                     $errorEmail = isset($templateErrors['email']) ? $templateErrors['email'] : false;
                     $oldEmail = isset($oldValues['email']) ? $oldValues['email'] : '';
-
-                    $errorEmail = false;
                 @endphp
 
                 <div class="col-12 @if($errorEmail) was-validated @endif">
