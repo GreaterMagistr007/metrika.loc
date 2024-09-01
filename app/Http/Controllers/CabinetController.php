@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AlertMessage;
 use App\Traits\ValidatorTrait;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -129,7 +130,18 @@ class CabinetController extends Controller
             return $this->render('auth.register');
         }
 
-        dd("Регистрация POST все хорошо");
+        $user = User::registerNewUser($email, $phone, $password);
+
+        if ($user) {
+            AlertMessage::addMessage($user->id, AlertMessage::TYPE_SUCCESS, 'Регистрация успешна. Пожалуйста, авторизуйтесь.');
+            return redirect(route('cabinet.getLoginPage'));
+        }
+
+        // Что-то пошло не так, пользователь не зарегистрирован
+        $this->addParam('templateErrors', $errors);
+        $this->addParam('oldValues', $oldValues);
+        AlertMessage::addMessage($user->id, AlertMessage::TYPE_ERROR, 'Ошибка регистрации. Пожалуйста, попробуйте еще раз');
+        return $this->render('auth.register');
     }
 
 
