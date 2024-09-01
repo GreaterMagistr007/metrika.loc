@@ -7,6 +7,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Facades\Hash;
 
 class User extends Authenticatable
 {
@@ -20,6 +21,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'phone',
         'password',
     ];
 
@@ -110,5 +112,26 @@ class User extends Authenticatable
     public static function getByPhone($phone)
     {
         return self::where('phone', $phone)->first();
+    }
+
+    /**
+     * Регистрируем нового пользователя
+     *
+     * @param $email
+     * @param $phone
+     * @param $password
+     * @return User
+     */
+    public static function registerNewUser($email, $phone, $password)
+    {
+        $user = new self([
+            'email' => $email,
+            'phone' => $phone,
+            'password' => Hash::make($password),
+        ]);
+
+        $user->save();
+
+        return self::getByEmail($email);
     }
 }
