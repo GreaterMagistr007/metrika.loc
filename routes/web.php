@@ -8,6 +8,7 @@ Route::any('/', function() {
     return view('welcome');
 })->name('site.index');
 
+require 'autorisation.php';
 require 'cabinet.php';
 
-require __DIR__.'/auth.php';
+//require __DIR__.'/auth.php';

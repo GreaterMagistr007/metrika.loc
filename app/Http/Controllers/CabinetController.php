@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Traits\ValidatorTrait;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -10,6 +11,8 @@ use Illuminate\Support\Facades\Session;
 
 class CabinetController extends Controller
 {
+    use ValidatorTrait;
+
     /**
      * Список параметров, которые будут переданы в шаблон
      *
@@ -30,6 +33,8 @@ class CabinetController extends Controller
      */
     private $user;
 
+    /*************************************************** ПУБЛИЧНЫЕ МЕТОДЫ ***************************************************/
+
     /**
      * Обработка главной страницы кабинета аутентифицированного пользователя
      *
@@ -38,13 +43,83 @@ class CabinetController extends Controller
     public function getIndexPage()
     {
         if (!$this->checkUser()) {
-            return redirect(route('site.index'));
+            return redirect(route('site.index')); // TODO: переделать на страницу логина
         }
 
         $this->addParam('pageTitle', 'Главная');
 
         return $this->render('cabinet.index');
     }
+
+    public function getRegisterPage()
+    {
+        if ($this->checkUser()) {
+            return redirect(route('cabinet.getIndexPage'));
+        }
+
+        $this->addParam('pageTitle', 'Регистрация');
+
+        return $this->render('auth.register');
+    }
+
+    public function postRegisterPage(Request $request)
+    {
+        $errors = [];
+        $oldValues = [];
+
+        // Проверка email
+        $email = $request->post('email');
+        $oldValues['email'] = $email;
+        if (!$this->validateEmail($email)) {
+            $errors['email'] = 'Введите корректный Email';
+        }
+
+        // проверка номера телефона
+        $phone = $request->post('phone');
+        $oldValues['phone'] = $phone;
+        if (!$this->validatePhone($phone)) {
+            $errors['phone'] = 'Введите корректный номер телефона';
+        }
+
+        // Проверка пароля:
+        $password = $request->post('password');
+        $passwordErrors = $this->validatePassword($password);
+        if ($passwordErrors !== true) {
+            $errors['password'] = implode('<br>', $passwordErrors);
+        }
+
+        $passwordConfirm = $request->post('password_confirm');
+        if ($password !== $passwordConfirm) {
+            $passwordConfirmErrorText = 'Введенные пароли не совпадают';
+            if (isset($errors['password'])) {
+                $errors['password'] .= '<br>' . $passwordConfirmErrorText;
+            } else {
+                $errors['password'] = $passwordConfirmErrorText;
+            }
+        }
+
+        // Проверка принятия условий:
+        $terms = $request->post('terms');
+        if (!$terms || $terms !== 'on') {
+            $errors['terms'] = 'Вы должны согласиться с условиями обработки персональных данных';
+        }
+
+        if (count($errors)) {
+            $this->addParam('templateErrors', $errors);
+            $this->addParam('oldValues', $oldValues);
+            return $this->render('auth.register');
+        }
+        dd("Регистрация POST все хорошо");
+    }
+
+
+    public function getLoginPage()
+    {
+        dd('Страница авторизации');
+    }
+
+
+    /*************************************************** ПРИВАТНЫЕ МЕТОДЫ ***************************************************/
 
     /**
      * Проверяет наличие аутентифицированного пользователя в системе
@@ -117,6 +192,13 @@ class CabinetController extends Controller
      */
     private function render($view = '')
     {
-        return view($view, $this->getParams());
+        $params = $this->getParams();
+        if (isset($params['pageTitle'])) {
+            $params['pageTitle'] = $params['pageTitle'] . ' | ' . env('APP_NAME');
+        } else {
+            $params['pageTitle'] = env('APP_NAME');
+        }
+
+        return view($view, $params);
     }
 }
