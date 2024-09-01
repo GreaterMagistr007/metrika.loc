@@ -53,8 +53,14 @@ class CabinetController extends Controller
         return $this->render('cabinet.index');
     }
 
+    /**
+     * Страница регистрации
+     *
+     * @return \Closure|\Illuminate\Container\Container|mixed|object|null
+     */
     public function getRegisterPage()
     {
+        // Авторизованного пользователя отправляем в кабинет
         if ($this->checkUser()) {
             return redirect(route('cabinet.getIndexPage'));
         }
@@ -147,9 +153,21 @@ class CabinetController extends Controller
     }
 
 
+    /**
+     * Страница авторизации
+     *
+     * @return \Closure|\Illuminate\Container\Container|mixed|object|null
+     */
     public function getLoginPage()
     {
-        dd('Страница авторизации');
+        // Авторизованного пользователя отправляем в кабинет
+        if ($this->checkUser()) {
+            return redirect(route('cabinet.getIndexPage'));
+        }
+
+        $this->addParam('pageTitle', 'Авторизация');
+
+        return $this->render('auth.login');
     }
 
 
