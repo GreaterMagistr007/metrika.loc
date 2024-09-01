@@ -13,7 +13,7 @@ return new class extends Migration
     {
         // Добавляем параметр Номера телефона для пользователя
         Schema::table('users', function (Blueprint $table) {
-            $table->boolean('phone')
+            $table->string('phone')
                 ->nullable()
                 ->default(null)
                 ->after('email')

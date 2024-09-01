@@ -93,11 +93,22 @@ class User extends Authenticatable
     /**
      * Находит пользователя по его email
      *
-     * @param $id
+     * @param $email
      * @return self|null
      */
     public static function getByEmail($email)
     {
         return self::where('email', $email)->first();
+    }
+
+    /**
+     * Находит пользователя по его номеру телефона
+     *
+     * @param $phone
+     * @return self|null
+     */
+    public static function getByPhone($phone)
+    {
+        return self::where('phone', $phone)->first();
     }
 }
