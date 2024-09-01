@@ -133,6 +133,7 @@ class CabinetController extends Controller
         $user = User::registerNewUser($email, $phone, $password);
 
         if ($user) {
+            // Геристрация успешна, отправляем пользователя авторизовываться
             AlertMessage::addMessage($user->id, AlertMessage::TYPE_SUCCESS, 'Регистрация успешна. Пожалуйста, авторизуйтесь.');
             return redirect(route('cabinet.getLoginPage'));
         }
