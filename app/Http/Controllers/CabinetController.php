@@ -43,8 +43,9 @@ class CabinetController extends Controller
      */
     public function getIndexPage()
     {
+        dd('getIndexPage');
         if (!$this->checkUser()) {
-            return redirect(route('site.index')); // TODO: переделать на страницу логина
+            return redirect(route('cabinet.getLoginPage'));
         }
 
         $this->addParam('pageTitle', 'Главная');
