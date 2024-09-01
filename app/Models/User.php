@@ -134,4 +134,11 @@ class User extends Authenticatable
 
         return self::getByEmail($email);
     }
+
+    public function checkPassword($password)
+    {
+        $password = (string)$password;
+
+        return Hash::make($password) === $this->password;
+    }
 }

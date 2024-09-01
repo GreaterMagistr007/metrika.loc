@@ -9,7 +9,7 @@
                 <h5 class="card-title text-center pb-0 fs-4">Авторизация</h5>
             </div>
 
-            <form class="row g-3 "  action="{!! route('cabinet.postRegisterPage') !!}" method="post">
+            <form class="row g-3 "  action="{!! route('cabinet.postLoginPage') !!}" method="post">
 
                 <input type="hidden" name="_token" value="{{ csrf_token() }}" />
 
@@ -18,7 +18,7 @@
                     $oldEmail = isset($oldValues['email']) ? $oldValues['email'] : '';
                 @endphp
 
-                <div class="col-12 @if($errorEmail) was-validated @endif">
+                <div class="col-12">
                     <label for="email" class="form-label">Email</label>
                     <input type="email" name="email" class="form-control @if($errorEmail) is-invalid @endif" id="email" @if($oldEmail) value="{!! $oldEmail !!}" @endif required>
                     <div class="invalid-feedback">@if($errorEmail) {!! $errorEmail !!} @else Введите корректный Email @endif</div>

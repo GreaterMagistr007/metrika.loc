@@ -152,7 +152,6 @@ class CabinetController extends Controller
         return $this->render('auth.register');
     }
 
-
     /**
      * Страница авторизации
      *
@@ -168,6 +167,47 @@ class CabinetController extends Controller
         $this->addParam('pageTitle', 'Авторизация');
 
         return $this->render('auth.login');
+    }
+
+    public function postLoginPage(Request $request)
+    {
+        $errors = [];
+        $oldValues = [];
+
+        // Проверка email
+        $email = $request->post('email');
+        $oldValues['email'] = $email;
+        if (!$this->validateEmail($email)) {
+            $errors['email'] = 'Введите корректный Email';
+        }
+
+        // Проверка пароля:
+        $password = $request->post('password');
+
+        if (!$password) {
+            $errors['password'] = 'Введите пароль';
+        }
+
+        if (count($errors)) {
+            $this->addParam('templateErrors', $errors);
+            $this->addParam('oldValues', $oldValues);
+            return $this->render('auth.login');
+        }
+
+        $user = User::getByEmail($email);
+        if (!$user || !$user->checkPassword($password)) {
+            $errors['email'] = 'Не найдено связки email - пароль';
+            $errors['password'] = 'Не найдено связки email - пароль';
+
+            $this->addParam('templateErrors', $errors);
+            $this->addParam('oldValues', $oldValues);
+            return $this->render('auth.login');
+        }
+
+        // Проверка пароля:
+        $password = $request->post('password');
+
+
     }
 
 

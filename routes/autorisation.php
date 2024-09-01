@@ -13,5 +13,8 @@ Route::post('/register', [CabinetController::class, 'postRegisterPage'])
 Route::get('/login', [CabinetController::class, 'getLoginPage'])
     ->name('cabinet.getLoginPage');
 
+Route::post('/login', [CabinetController::class, 'postLoginPage'])
+    ->name('cabinet.postLoginPage');
+
 Route::any('/logout', [AuthenticatedSessionController::class, 'destroy'])
     ->name('logout');
